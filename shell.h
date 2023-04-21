@@ -20,13 +20,13 @@
 #define CHAI_CMD 3
 #define CONVERT_LOWERCASE 1
 #define CONVERT_UNSIGNED 2
-#define US_GETLINE 0 
+#define US_GETLINE 0
 #define US_STRTOK 0
 #define HST_FILE ".simple_shell_history"
 #define HST_MAX 4096
-char **environ;
+extern char **environ;
 /**
- * listofstr - a singly linked list
+ * struct listofstr - a singly linked list
  * @number : the number field
  * @st : the string
  * @next : to point to the next node
