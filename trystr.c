@@ -48,13 +48,12 @@ int _strcmp(char *strn1, char *strn2)
 char *starts_with(const char *heystack, const char *ndl)
 {
 	while (*ndl)
-	{
 		if (*ndl++ != *heystack++)
 		{
 			return (NULL);
 		}
 	return ((char *)heystack);
-	}
+
 }
 
 /**
