@@ -63,7 +63,7 @@ int _mycd(info_t *info)
 			return (1);
 		}
 		_puts(_getenv(info, "OLDPWD=")), _putchar('\n');
-		chdir_ret =
+		changedir_r =
 			chdir((d = _getenv(info, "OLDPWD=")) ? d : "/");
 	}
 	else
