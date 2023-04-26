@@ -34,7 +34,7 @@ extern char **environ;
 typedef struct listofstr
 {
 	int number;
-	char *st;
+	char *str;
 	struct listofstr *next;
 } list_t;
 /**
@@ -60,24 +60,24 @@ typedef struct listofstr
  */
 typedef struct infopass
 {
-	char *path;
-	char *argv;
 	char *arg;
+	char **argv;
+	char *path;
 	int argc;
-	char *fname;
 	unsigned int linecount;
-	int linecount_flag;
 	int err_num;
-	char **environ;
-	int status;
-	int env_changed;
-	list_t *alias;
+	int linecount_flag;
+	char *fname;
 	list_t *env;
 	list_t *history;
-	int histcount;
-	int cmd_buf_type;
-	char **cmd_buf;
+	list_t *alias;
+	char **environ;
+	int env_changed;
+	int status;
+	char **cmd_buf; 
+	int cmd_buf_type; 
 	int readfd;
+	int histcount;
 } info_t;
 #define INFO_INIT \
 {NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, \

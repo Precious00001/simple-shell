@@ -24,10 +24,10 @@ void _eputs(char *str)
  */
 int _eputchar(char c)
 {
-	static char buf[WRITE_BUF_SIZE];
+	static char buf[BUF_WRITE_SIZE];
 	static int buf_len;
 
-	if (buf_len >= WRITE_BUF_SIZE || c == BUF_FLUSH)
+	if (buf_len >= BUF_WRITE_SIZE || c == BUF_FLUSH)
 	{
 		write(STDERR_FILENO, buf, buf_len);
 		buf_len = 0;
@@ -51,9 +51,9 @@ int _eputchar(char c)
 int _putfd(char c, int fd)
 {
 	static int i;
-	static char buf[WRITE_BUF_SIZE];
+	static char buf[BUF_WRITE_SIZE];
 
-	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+	if (c == BUF_FLUSH || i >= BUF_WRITE_SIZE)
 	{
 		write(fd, buf, i);
 		i = 0;
