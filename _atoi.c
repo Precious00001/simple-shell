@@ -19,7 +19,9 @@ int interactive(info_t *info)
  */
 int is_delim(char c, char *delim)
 {
-	for (int i = 0; delim[i] != '\0'; i++)
+	int i;
+
+	for (i = 0; delim[i] != '\0'; i++)
 	{
 		if (c == delim[i])
 		{

@@ -8,10 +8,12 @@
  */
 char **get_environ(info_t *info)
 {
+	char **environ;
+
 	if (info->environ && !info->env_changed)
 		return (info->environ);
 
-	char **environ = list_to_strings(info->env);
+	environ = list_to_strings(info->env);
 
 	if (environ)
 	{
@@ -33,12 +35,15 @@ char **get_environ(info_t *info)
  */
 int _unsetenv(info_t *info, char *var)
 {
+	int count;
+	list_t *prev = NULL;
+	list_t *current = info->env;
+
+
 	if (!info->env || !var)
 		return (0);
 
-	int count = 0;
-
-	list_t *prev = NULL, *current = info->env;
+	count = 0;
 
 	while (current != NULL)
 	{
@@ -79,15 +84,19 @@ int _unsetenv(info_t *info, char *var)
  * @value: the string env var value
  *  Return: Always 0
  */
+list_t **node_ptr;
+
 int _setenv(info_t *info, char *var, char *value)
 {
+	char *new_env;
+	size_t var_len, value_len;
+	var_len = _strlen(var);
+	value_len = _strlen(value);
+
 	if (!var || !value)
 		return (0);
 
-	size_t var_len = _strlen(var);
-	size_t value_len = _strlen(value);
-
-	char *new_env = malloc(var_len + value_len + 2);
+	new_env = malloc(var_len + value_len + 2);
 
 	if (!new_env)
 		return (1);
@@ -96,7 +105,7 @@ int _setenv(info_t *info, char *var, char *value)
 	new_env[var_len] = '=';
 	_strcpy(new_env + var_len + 1, value);
 
-	list_t **node_ptr = &(info->env);
+        node_ptr = &(info->env);
 
 	while (*node_ptr)
 	{
