@@ -22,7 +22,7 @@
 #define CONVERT_UNSIGNED 2
 #define US_GETLINE 0
 #define US_STRTOK 0
-#define HST_FILE ".simple_shell_history"
+#define HST_FILE ".our_history_on_simple_shell"
 #define HST_MAX 4096
 extern char **environ;
 /**
