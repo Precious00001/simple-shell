@@ -8,15 +8,22 @@
  */
 char **get_environ(info_t *info)
 {
-	if (!info->environ || info->env_changed)
+	char **environ;
+
+	if (info->environ && !info->env_changed)
+		return (info->environ);
+
+	environ = list_to_strings(info->env);
+
+	if (environ)
 	{
-		info->environ = list_to_strings(info->env);
+		if (info->environ)
+			ffree(info->environ);
+		info->environ = environ;
 		info->env_changed = 0;
 	}
-
 	return (info->environ);
 }
-
 /**
  * _unsetenv - Remove an environment variable
  * @info: Structure containing potential arguments. Used to maintain
@@ -26,28 +33,45 @@ char **get_environ(info_t *info)
  */
 int _unsetenv(info_t *info, char *var)
 {
-	list_t *node = info->env;
-	size_t i = 0;
-	char *p;
+	int count;
+	list_t *prev = NULL;
+	list_t *current = info->env;
 
-	if (!node || !var)
+
+	if (!info->env || !var)
 		return (0);
 
-	while (node)
+	count = 0;
+
+	while (current != NULL)
 	{
-		p = starts_with(node->str, var);
+		char *p = starts_with(current->str, var);
+
 		if (p && *p == '=')
 		{
-			info->env_changed = delete_node_at_index(&(info->env), i);
-			i = 0;
-			node = info->env;
-			continue;
+			if (prev == NULL)
+			{
+				info->env = current->next;
+			}
+			else
+			{
+				prev->next = current->next;
+			}
+			free(current->str);
+			free(current);
+			count++;
+			current = prev == NULL ? info->env : prev->next;
 		}
-		node = node->next;
-		i++;
+		else
+		{
+			prev = current;
+			current = current->next;
+		}
 	}
+	info->env_changed = count > 0;
 	return (info->env_changed);
 }
+
 
 /**
  * _setenv - Initialize a new environment variable,
@@ -60,34 +84,34 @@ int _unsetenv(info_t *info, char *var)
  */
 int _setenv(info_t *info, char *var, char *value)
 {
-	char *buf = NULL;
+	char *abuff = NULL;
 	list_t *node;
-	char *p;
+	char *o;
 
 	if (!var || !value)
 		return (0);
 
-	buf = malloc(_strlen(var) + _strlen(value) + 2);
-	if (!buf)
+	abuff = malloc(_strlen(var) + _strlen(value) + 2);
+	if (!abuff)
 		return (1);
-	_strcpy(buf, var);
-	_strcat(buf, "=");
-	_strcat(buf, value);
+	_strcpy(abuff, var);
+	_strcat(abuff, "=");
+	_strcat(abuff, value);
 	node = info->env;
 	while (node)
 	{
-		p = starts_with(node->str, var);
-		if (p && *p == '=')
+		o = starts_with(node->str, var);
+		if (o && *o == '=')
 		{
 			free(node->str);
-			node->str = buf;
+			node->str = abuff;
 			info->env_changed = 1;
 			return (0);
 		}
 		node = node->next;
 	}
-	add_node_end(&(info->env), buf, 0);
-	free(buf);
+	add_node_end(&(info->env), abuff, 0);
+	free(abuff);
 	info->env_changed = 1;
 	return (0);
 }

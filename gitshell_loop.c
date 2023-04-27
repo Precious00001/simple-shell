@@ -11,11 +11,13 @@ int hsh(info_t *info, char **av)
 {
 	ssize_t r = 0;
 	int builtin_ret = 0;
+	int is_interactive;
 
+	clear_info(info);
+	is_interactive = interactive(info);
 	while (r != -1 && builtin_ret != -2)
 	{
-		clear_info(info);
-		if (interactive(info))
+		if (is_interactive)
 			_puts("$ ");
 		_eputchar(BUF_FLUSH);
 		r = get_input(info);
@@ -26,13 +28,13 @@ int hsh(info_t *info, char **av)
 			if (builtin_ret == -1)
 				find_cmd(info);
 		}
-		else if (interactive(info))
+		else if (is_interactive)
 			_putchar('\n');
 		free_info(info, 0);
 	}
 	write_history(info);
 	free_info(info, 1);
-	if (!interactive(info) && info->status)
+	if (!is_interactive && info->status)
 		exit(info->status);
 	if (builtin_ret == -2)
 	{
@@ -42,6 +44,7 @@ int hsh(info_t *info, char **av)
 	}
 	return (builtin_ret);
 }
+
 
 /**
  * find_builtin - finds a builtin command
@@ -55,7 +58,8 @@ int hsh(info_t *info, char **av)
 int find_builtin(info_t *info)
 {
 	int i, built_in_ret = -1;
-	builtin_table builtintbl[] = {
+
+	builtin_t builtintbl[] = {
 		{"exit", _myexit},
 		{"env", _myenv},
 		{"help", _myhelp},
@@ -66,16 +70,18 @@ int find_builtin(info_t *info)
 		{"alias", _myalias},
 		{NULL, NULL}
 	};
-
+	char* type = info->argv[0];
 	for (i = 0; builtintbl[i].type; i++)
-		if (_strcmp(info->argv[0], builtintbl[i].type) == 0)
+		if (_strcmp(type, builtintbl[i].type) == 0)
 		{
-			info->line_count++;
+			info->linecount++;
 			built_in_ret = builtintbl[i].func(info);
 			break;
 		}
 	return (built_in_ret);
 }
+
+
 
 /**
  * find_cmd - finds a command in PATH
@@ -91,7 +97,7 @@ void find_cmd(info_t *info)
 	info->path = info->argv[0];
 	if (info->linecount_flag == 1)
 	{
-		info->line_count++;
+		info->linecount++;
 		info->linecount_flag = 0;
 	}
 	for (i = 0, k = 0; info->arg[i]; i++)
@@ -101,7 +107,7 @@ void find_cmd(info_t *info)
 		return;
 
 	path = find_path(info, _getenv(info, "PATH="), info->argv[0]);
-	if (path)
+	if (path != NULL)
 	{
 		info->path = path;
 		fork_cmd(info);
@@ -138,7 +144,9 @@ void fork_cmd(info_t *info)
 	}
 	if (child_pid == 0)
 	{
-		if (execve(info->path, info->argv, get_environ(info)) == -1)
+		char **environ = get_environ(info);
+
+		if (execve(info->path, info->argv, environ) == -1)
 		{
 			free_info(info, 1);
 			if (errno == EACCES)
@@ -158,3 +166,4 @@ void fork_cmd(info_t *info)
 		}
 	}
 }
+

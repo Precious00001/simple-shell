@@ -8,15 +8,11 @@
  */
 void _eputs(char *str)
 {
-	int i = 0;
-
-	if (!str)
+	if (str == NULL)
 		return;
-	while (str[i] != '\0')
-	{
-		_eputchar(str[i]);
-		i++;
-	}
+
+	for (; *str != '\0'; str++)
+		_eputchar(*str);
 }
 
 /**
@@ -28,18 +24,21 @@ void _eputs(char *str)
  */
 int _eputchar(char c)
 {
-	static int i;
-	static char buf[WRITE_BUF_SIZE];
+	static char buf[BUF_WRITE_SIZE];
+	static int buf_len;
 
-	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+	if (buf_len >= BUF_WRITE_SIZE || c == BUF_FLUSH)
 	{
-		write(2, buf, i);
-		i = 0;
+		write(STDERR_FILENO, buf, buf_len);
+		buf_len = 0;
 	}
+
 	if (c != BUF_FLUSH)
-		buf[i++] = c;
+		buf[buf_len++] = c;
+
 	return (1);
 }
+
 
 /**
  * _putfd - writes the character c to given fd
@@ -52,9 +51,9 @@ int _eputchar(char c)
 int _putfd(char c, int fd)
 {
 	static int i;
-	static char buf[WRITE_BUF_SIZE];
+	static char buf[BUF_WRITE_SIZE];
 
-	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+	if (c == BUF_FLUSH || i >= BUF_WRITE_SIZE)
 	{
 		write(fd, buf, i);
 		i = 0;
@@ -77,9 +76,9 @@ int _putsfd(char *str, int fd)
 
 	if (!str)
 		return (0);
-	while (*str)
-	{
-		i += _putfd(*str++, fd);
-	}
+	for (i = 0; str[i]; i++)
+		_putfd(str[i], fd);
 	return (i);
 }
+
+

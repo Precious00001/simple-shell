@@ -19,11 +19,18 @@ int interactive(info_t *info)
  */
 int is_delim(char c, char *delim)
 {
-	while (*delim)
-		if (*delim++ == c)
+	int i;
+
+	for (i = 0; delim[i] != '\0'; i++)
+	{
+		if (c == delim[i])
+		{
 			return (1);
+		}
+	}
 	return (0);
 }
+
 
 /**
  *_isalpha - checks for alphabetic character
@@ -33,11 +40,9 @@ int is_delim(char c, char *delim)
 
 int _isalpha(int c)
 {
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
-		return (1);
-	else
-		return (0);
+	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 }
+
 
 /**
  *_atoi - converts a string to an integer
@@ -47,29 +52,26 @@ int _isalpha(int c)
 
 int _atoi(char *s)
 {
-	int i, sign = 1, flag = 0, output;
+	int sign = 1;
 	unsigned int result = 0;
 
-	for (i = 0;  s[i] != '\0' && flag != 2; i++)
+	while (*s)
 	{
-		if (s[i] == '-')
-			sign *= -1;
-
-		if (s[i] >= '0' && s[i] <= '9')
+		if (*s == '-')
+			sign = -sign;
+		else if (*s >= '0' && *s <= '9')
 		{
-			flag = 1;
-			result *= 10;
-			result += (s[i] - '0');
+			result = result * 10 + (*s - '0');
 		}
-		else if (flag == 1)
-			flag = 2;
+		else
+		{
+			break;
+		}
+		s++;
 	}
 
-	if (sign == -1)
-		output = -result;
-	else
-		output = result;
-
-	return (output);
+	return (sign * result);
 }
+
+
 

@@ -1,5 +1,4 @@
 #include "shell.h"
-
 /**
  **_memset - fills memory with a constant byte
  *@s: the pointer to the memory area
@@ -9,28 +8,36 @@
  */
 char *_memset(char *s, char b, unsigned int n)
 {
-	unsigned int i;
+	char *ptr = s;
 
-	for (i = 0; i < n; i++)
-		s[i] = b;
+	while (n--)
+		*ptr++ = b;
 	return (s);
 }
-
 /**
  * ffree - frees a string of strings
  * @pp: string of strings
  */
 void ffree(char **pp)
 {
-	char **a = pp;
+	char **a;
+
+	a = pp;
 
 	if (!pp)
+	{
 		return;
+	}
 	while (*pp)
-		free(*pp++);
+	{
+		char *p = *pp;
+		*pp = NULL;
+		free(p);
+		pp++;
+	}
+
 	free(a);
 }
-
 /**
  * _realloc - reallocates a block of memory
  * @ptr: pointer to previous malloc'ated block
@@ -41,22 +48,25 @@ void ffree(char **pp)
  */
 void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
 {
-	char *p;
+	void *new_ptr;
 
-	if (!ptr)
+	if (new_size == 0)
+	{
+		free(ptr);
+		return (NULL);
+	}
+
+	if (ptr == NULL)
 		return (malloc(new_size));
-	if (!new_size)
-		return (free(ptr), NULL);
-	if (new_size == old_size)
+
+	if (new_size <= old_size)
 		return (ptr);
 
-	p = malloc(new_size);
-	if (!p)
+	new_ptr = malloc(new_size);
+	if (!new_ptr)
 		return (NULL);
 
-	old_size = old_size < new_size ? old_size : new_size;
-	while (old_size--)
-		p[old_size] = ((char *)ptr)[old_size];
+	memcpy(new_ptr, ptr, old_size);
 	free(ptr);
-	return (p);
+	return (new_ptr);
 }
