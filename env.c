@@ -84,42 +84,34 @@ int _unsetenv(info_t *info, char *var)
  */
 int _setenv(info_t *info, char *var, char *value)
 {
-	char *new_env;
-	size_t var_len, value_len;
-
-	var_len = _strlen(var);
-	value_len = _strlen(value);
+	char *abuff = NULL;
+	list_t *node;
+	char *o;
 
 	if (!var || !value)
 		return (0);
 
-	new_env = malloc(var_len + value_len + 2);
-
-	if (!new_env)
+	abuff = malloc(_strlen(var) + _strlen(value) + 2);
+	if (!abuff)
 		return (1);
-
-	_strcpy(new_env, var);
-	new_env[var_len] = '=';
-	_strcpy(new_env + var_len + 1, value);
-
-	node_ptr = &(info->env);
-
-	while (*node_ptr)
+	_strcpy(abuff, var);
+	_strcat(abuff, "=");
+	_strcat(abuff, value);
+	node = info->env;
+	while (node)
 	{
-		char *p = starts_with((*node_ptr)->str, var);
-
-		if (p && *p == '=')
+		o = starts_with(node->str, var);
+		if (o && *o == '=')
 		{
-			free((*node_ptr)->str);
-			(*node_ptr)->str = new_env;
+			free(node->str);
+			node->str = abuff;
 			info->env_changed = 1;
 			return (0);
 		}
-		node_ptr = &((*node_ptr)->next);
+		node = node->next;
 	}
-
-	add_node_end(node_ptr, new_env, 0);
+	add_node_end(&(info->env), abuff, 0);
+	free(abuff);
 	info->env_changed = 1;
 	return (0);
 }
-
