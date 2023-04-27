@@ -28,7 +28,7 @@ extern char **environ;
 /**
  * struct listofstr - a singly linked list
  * @number : the number field
- * @st : the string
+ * @str : the string
  * @next : to point to the next node
  */
 typedef struct listofstr
@@ -74,8 +74,8 @@ typedef struct infopass
 	char **environ;
 	int env_changed;
 	int status;
-	char **cmd_buf; 
-	int cmd_buf_type; 
+	char **cmd_buf;
+	int cmd_buf_type;
 	int readfd;
 	int histcount;
 } info_t;

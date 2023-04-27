@@ -44,8 +44,6 @@ int hsh(info_t *info, char **av)
 	}
 	return (builtin_ret);
 }
-
-
 /**
  * find_builtin - finds a builtin command
  * @info: the parameter & return info struct
@@ -70,7 +68,8 @@ int find_builtin(info_t *info)
 		{"alias", _myalias},
 		{NULL, NULL}
 	};
-	char* type = info->argv[0];
+	char *type = info->argv[0];
+
 	for (i = 0; builtintbl[i].type; i++)
 		if (_strcmp(type, builtintbl[i].type) == 0)
 		{
@@ -80,9 +79,6 @@ int find_builtin(info_t *info)
 		}
 	return (built_in_ret);
 }
-
-
-
 /**
  * find_cmd - finds a command in PATH
  * @info: the parameter & return info struct
@@ -138,7 +134,6 @@ void fork_cmd(info_t *info)
 	child_pid = fork();
 	if (child_pid == -1)
 	{
-		/* TODO: PUT ERROR FUNCTION */
 		perror("Error:");
 		return;
 	}
@@ -153,7 +148,6 @@ void fork_cmd(info_t *info)
 				exit(126);
 			exit(1);
 		}
-		/* TODO: PUT ERROR FUNCTION */
 	}
 	else
 	{
@@ -166,4 +160,3 @@ void fork_cmd(info_t *info)
 		}
 	}
 }
-
