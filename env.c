@@ -24,8 +24,6 @@ char **get_environ(info_t *info)
 	}
 	return (info->environ);
 }
-
-
 /**
  * _unsetenv - Remove an environment variable
  * @info: Structure containing potential arguments. Used to maintain
@@ -84,12 +82,11 @@ int _unsetenv(info_t *info, char *var)
  * @value: the string env var value
  *  Return: Always 0
  */
-list_t **node_ptr;
-
 int _setenv(info_t *info, char *var, char *value)
 {
 	char *new_env;
 	size_t var_len, value_len;
+
 	var_len = _strlen(var);
 	value_len = _strlen(value);
 
@@ -105,7 +102,7 @@ int _setenv(info_t *info, char *var, char *value)
 	new_env[var_len] = '=';
 	_strcpy(new_env + var_len + 1, value);
 
-        node_ptr = &(info->env);
+	node_ptr = &(info->env);
 
 	while (*node_ptr)
 	{

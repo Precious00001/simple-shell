@@ -56,47 +56,47 @@ int write_history(info_t *info)
 	return (1);
 }
 /**
- * read_history - a function that read the history from a file
- * @info: a structure of the parameter
- * Return: success on histcount, 0 otherwise
+ * read_history - reads history from file
+ * @info: the parameter struct
+ *
+ * Return: histcount on success, 0 otherwise
  */
 int read_history(info_t *info)
 {
-	int a, final = 0, linecount = 0;
-	char *abuff = NULL, *filename = get_history_file(info);
-	ssize_t fd, readln, fsz = 0;
+	int i, last = 0, linecount = 0;
+	ssize_t fd, rdlen, fsize = 0;
 	struct stat st;
+	char *buf = NULL, *filename = get_history_file(info);
 
 	if (!filename)
 		return (0);
+
 	fd = open(filename, O_RDONLY);
 	free(filename);
 	if (fd == -1)
 		return (0);
 	if (!fstat(fd, &st))
-		fsz = st.st_size;
-	if (fsz < 2)
+		fsize = st.st_size;
+	if (fsize < 2)
 		return (0);
-	abuff = malloc(sizeof(char) * (fsz + 1));
-	if (!abuff)
-	{
+	buf = malloc(sizeof(char) * (fsize + 1));
+	if (!buf)
 		return (0);
-	}
-	readln = read(fd, abuff, fsz);
-	abuff[fsz] = 0;
-	if (readln <= 0)
-	{
-		return (free(abuff), 0);
-	}
+	rdlen = read(fd, buf, fsize);
+	buf[fsize] = 0;
+	if (rdlen <= 0)
+		return (free(buf), 0);
 	close(fd);
-	for (a = 0; a < fsz; a++)
-		if (abuff[a] == '\n')
-			abuff[a] = 0;
-			build_history_list(info, abuff + final, linecount++);
-			final = a + 1;
-	if (final != a)
-		build_history_list(info, abuff + final, linecount++);
-	free(abuff);
+	for (i = 0; i < fsize; i++)
+		if (buf[i] == '\n')
+		{
+			buf[i] = 0;
+			build_history_list(info, buf + last, linecount++);
+			last = i + 1;
+		}
+	if (last != i)
+		build_history_list(info, buf + last, linecount++);
+	free(buf);
 	info->histcount = linecount;
 	while (info->histcount-- >= HST_MAX)
 		delete_node_at_index(&(info->history), 0);
