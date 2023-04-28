@@ -1,117 +1,87 @@
 #include "shell.h"
-
 /**
- * get_environ - returns the string array copy of our environ
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- * Return: Always 0
+ * get_environ - a function that return the string array copy
+ * @finf: a potential arguments contained in a structure
+ * Return: 0 in all time
  */
-char **get_environ(info_t *info)
+char **get_environ(info_t *finf)
 {
-	char **environ;
-
-	if (info->environ && !info->env_changed)
-		return (info->environ);
-
-	environ = list_to_strings(info->env);
-
-	if (environ)
+	if (!finf->environ || finf->env_changed)
 	{
-		if (info->environ)
-			ffree(info->environ);
-		info->environ = environ;
-		info->env_changed = 0;
+		finf->environ = list_to_strings(finf->env);
+		finf->env_changed = 0;
 	}
-	return (info->environ);
+
+	return (finf->environ);
 }
 /**
- * _unsetenv - Remove an environment variable
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- *  Return: 1 on delete, 0 otherwise
- * @var: the string env var property
+ * _unsetenv - a function that removes a variable of an environment
+ * @finf: a potential arguments contained in a structure
+ *  Return: 0 otherwise and 1 in delete
+ * @v:  the property of string env var
  */
-int _unsetenv(info_t *info, char *var)
+int _unsetenv(info_t *finf, char *v)
 {
-	int count;
-	list_t *prev = NULL;
-	list_t *current = info->env;
+	list_t *n = finf->env;
+	size_t a = 0;
+	char *b;
 
-
-	if (!info->env || !var)
+	if (!n || !v)
 		return (0);
 
-	count = 0;
-
-	while (current != NULL)
+	while (n)
 	{
-		char *p = starts_with(current->str, var);
-
-		if (p && *p == '=')
+		b = starts_with(n->str, v);
+		if (b && *b == '=')
 		{
-			if (prev == NULL)
-			{
-				info->env = current->next;
-			}
-			else
-			{
-				prev->next = current->next;
-			}
-			free(current->str);
-			free(current);
-			count++;
-			current = prev == NULL ? info->env : prev->next;
+			finf->env_changed = delete_node_at_index(&(finf->env), a);
+			a = 0;
+			n = finf->env;
+			continue;
 		}
-		else
-		{
-			prev = current;
-			current = current->next;
-		}
+		n = n->next;
+		a++;
 	}
-	info->env_changed = count > 0;
-	return (info->env_changed);
+	return (finf->env_changed);
 }
-
-
 /**
- * _setenv - Initialize a new environment variable,
- *             or modify an existing one
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- * @var: the string env var property
- * @value: the string env var value
- *  Return: Always 0
+ * _setenv - a new environment variable to be initialized or modified
+ * if one is existed
+ * @finf: a potential arguments contained in a structure
+ * @v: var property of string env
+ * @val: var value of a string environment
+ *  Return: 0 in all time
  */
-int _setenv(info_t *info, char *var, char *value)
+int _setenv(info_t *finf, char *v, char *val)
 {
 	char *abuff = NULL;
-	list_t *node;
-	char *o;
+	list_t *n;
+	char *b;
 
-	if (!var || !value)
+	if (!v || !val)
 		return (0);
 
-	abuff = malloc(_strlen(var) + _strlen(value) + 2);
+	abuff = malloc(_strlen(v) + _strlen(val) + 2);
 	if (!abuff)
 		return (1);
-	_strcpy(abuff, var);
+	_strcpy(abuff, v);
 	_strcat(abuff, "=");
-	_strcat(abuff, value);
-	node = info->env;
-	while (node)
+	_strcat(abuff, val);
+	n = finf->env;
+	while (n)
 	{
-		o = starts_with(node->str, var);
-		if (o && *o == '=')
+		b = starts_with(n->str, v);
+		if (b && *b == '=')
 		{
-			free(node->str);
-			node->str = abuff;
-			info->env_changed = 1;
+			free(n->str);
+			n->str = abuff;
+			finf->env_changed = 1;
 			return (0);
 		}
-		node = node->next;
+		n = n->next;
 	}
-	add_node_end(&(info->env), abuff, 0);
+	add_node_end(&(finf->env), abuff, 0);
 	free(abuff);
-	info->env_changed = 1;
+	finf->env_changed = 1;
 	return (0);
 }

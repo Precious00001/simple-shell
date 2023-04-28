@@ -91,7 +91,7 @@ typedef struct builtin
 {
 	char *type;
 	int (*func)(info_t *);
-} builtin_t;
+} builtin_tblll;
 int is_chain(info_t *, char *, size_t *);
 void check_chain(info_t *, char *, size_t *, size_t, size_t);
 int replace_alias(info_t *);

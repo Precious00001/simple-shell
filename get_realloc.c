@@ -1,72 +1,58 @@
 #include "shell.h"
 /**
- **_memset - fills memory with a constant byte
- *@s: the pointer to the memory area
- *@b: the byte to fill *s with
- *@n: the amount of bytes to be filled
- *Return: (s) a pointer to the memory area s
+ **_memset - a function that has a constant byte to be filled within memory
+ *@c: memory area referred to the pointer
+ *@y: fill s with the byte
+ *@b: the byte amounts to be filled
+ *Return: to the memory s returned a pointer s
  */
-char *_memset(char *s, char b, unsigned int n)
+char *_memset(char *c, char y, unsigned int b)
 {
-	char *ptr = s;
+	unsigned int a;
 
-	while (n--)
-		*ptr++ = b;
-	return (s);
+	for (a = 0; a < b; a++)
+		c[a] = y;
+	return (c);
 }
 /**
- * ffree - frees a string of strings
- * @pp: string of strings
+ * ffree - a string of strings to be free
+ * @ontoal: you can say a one string of alot of strings
  */
-void ffree(char **pp)
+void ffree(char **ontoal)
 {
-	char **a;
+	char **x = ontoal;
 
-	a = pp;
-
-	if (!pp)
-	{
+	if (!ontoal)
 		return;
-	}
-	while (*pp)
-	{
-		char *p = *pp;
-		*pp = NULL;
-		free(p);
-		pp++;
-	}
-
-	free(a);
+	while (*ontoal)
+		free(*ontoal++);
+	free(x);
 }
 /**
- * _realloc - reallocates a block of memory
- * @ptr: pointer to previous malloc'ated block
- * @old_size: byte size of previous block
- * @new_size: byte size of new block
- *
- * Return: pointer to da ol'block nameen.
+ * _realloc - a function that reallocates a couple of blocks of memory
+ * @p: a pointer to the previous
+ * @oz: previous block byte size
+ * @nz: the new block byte size
+ * Return: a pointer to be returned
  */
-void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
+void *_realloc(void *p, unsigned int oz, unsigned int nz)
 {
-	void *new_ptr;
+	char *b;
 
-	if (new_size == 0)
-	{
-		free(ptr);
-		return (NULL);
-	}
+	if (!p)
+		return (malloc(nz));
+	if (!nz)
+		return (free(p), NULL);
+	if (nz == oz)
+		return (p);
 
-	if (ptr == NULL)
-		return (malloc(new_size));
-
-	if (new_size <= old_size)
-		return (ptr);
-
-	new_ptr = malloc(new_size);
-	if (!new_ptr)
+	b = malloc(nz);
+	if (!b)
 		return (NULL);
 
-	memcpy(new_ptr, ptr, old_size);
-	free(ptr);
-	return (new_ptr);
+	oz = oz < nz ? oz : nz;
+	while (oz--)
+		b[oz] = ((char *)p)[oz];
+	free(p);
+	return (b);
 }

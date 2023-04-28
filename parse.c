@@ -1,19 +1,20 @@
 #include "shell.h"
 
 /**
- * is_cmd - determines if a file is an executable command
- * @info: the info struct
- * @path: path to the file
- *
- * Return: 1 if true, 0 otherwise
+ * is_cmd - executable command
+ * @finf : structure info
+ * @pth: the file path
+ * Return: 0 in the otherwise case and 1 if true
  */
-int is_cmd(info_t *info, char *path)
+int is_cmd(info_t *finf, char *pth)
 {
 	struct stat st;
 
-	(void)info;
-	if (!path || stat(path, &st))
+	(void)finf;
+	if (!pth || stat(pth, &st))
+	{
 		return (0);
+	}
 
 	if (st.st_mode & S_IFREG)
 	{
@@ -23,64 +24,69 @@ int is_cmd(info_t *info, char *path)
 }
 
 /**
- * dup_chars - duplicates characters
- * @pathstr: the PATH string
- * @start: starting index
- * @stop: stopping index
- *
- * Return: pointer to new buffer
+ * dup_chars - characters to be duplicated
+ * @pths: string path
+ * @strt: index of starting
+ * @stp: index to stop
+ * Return: pointer to return a new buffer
  */
-char *dup_chars(char *pathstr, int start, int stop)
+char *dup_chars(char *pths, int strt, int stp)
 {
-	static char buf[1024];
-	int i = 0, k = 0;
+	static char abuff[1024];
+	int a = 0, c = 0;
 
-	for (k = 0, i = start; i < stop; i++)
-		if (pathstr[i] != ':')
-			buf[k++] = pathstr[i];
-	buf[k] = 0;
-	return (buf);
-}
-
-/**
- * find_path - finds this cmd in the PATH string
- * @info: the info struct
- * @pathstr: the PATH string
- * @cmd: the cmd to find
- *
- * Return: full path of cmd if found or NULL
- */
-char *find_path(info_t *info, char *pathstr, char *cmd)
-{
-	int i = 0, curr_pos = 0;
-	char *path;
-
-	if (!pathstr)
-		return (NULL);
-	if ((_strlen(cmd) > 2) && starts_with(cmd, "./"))
+	for (c = 0, a = strt; a < stp; a++)
 	{
-		if (is_cmd(info, cmd))
-			return (cmd);
+		if (pths[a] != ':')
+		{
+			abuff[c++] = pths[a];
+		}
+	}
+	abuff[c] = 0;
+	return (abuff);
+}
+/**
+ * find_path - a function to look at the cmd in the pathstring
+ * @finf: the structure information
+ * @pths: string path
+ * @cemde: to find the cmd
+ * Return: null or if the path if cmd found
+ */
+char *find_path(info_t *finf, char *pths, char *cemde)
+{
+	int a = 0, place_now = 0;
+	char *pth;
+
+	if (!pths)
+	{
+		return (NULL);
+	}
+	if ((_strlen(cemde) > 2) && starts_with(cemde, "./"))
+	{
+		if (is_cmd(finf, cemde))
+		{
+			return (cemde);
+		}
 	}
 	while (1)
 	{
-		if (!pathstr[i] || pathstr[i] == ':')
+		if (!pths[a] || pths[a] == ':')
 		{
-			path = dup_chars(pathstr, curr_pos, i);
-			if (!*path)
-				_strcat(path, cmd);
+			pth = dup_chars(pths, place_now, a);
+			if (!*pth)
+				_strcat(pth, cemde);
 			else
 			{
-				_strcat(path, "/");
-				_strcat(path, cmd);
+				_strcat(pth, "/");
+				_strcat(pth, cemde);
 			}
-			if (is_cmd(info, path))
-				return (path);
-			if (!pathstr[i])
+			if (is_cmd(finf, pth))
+				return (pth);
+			if (!pths[a])
 				break;
-			curr_pos = i;
+			place_now = a;
 		}
-		i++;
+		a++;
 	}
 	return (NULL);
 }

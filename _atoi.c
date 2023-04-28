@@ -1,77 +1,70 @@
 #include "shell.h"
 
 /**
- * interactive - returns true if shell is interactive mode
- * @info: struct address
- *
- * Return: 1 if interactive mode, 0 otherwise
+ * interactive - a functio that returns true if the shell is interactive
+ * @finf: adress of the structure
+ * Return: 0 otherwise and 1 if interactive
  */
-int interactive(info_t *info)
+int interactive(info_t *finf)
 {
-	return (isatty(STDIN_FILENO) && info->readfd <= 2);
+	return (isatty(STDIN_FILENO) && finf->readfd <= 2);
 }
-
 /**
- * is_delim - checks if character is a delimeter
- * @c: the char to check
- * @delim: the delimeter string
- * Return: 1 if true, 0 if false
+ * is_delim - a function that checks the delimeter of a character
+ * @t: the character to be checked
+ * @del: string delimeter
+ * Return: 0 in false case and 1 if true
  */
-int is_delim(char c, char *delim)
+int is_delim(char t, char *del)
 {
-	int i;
-
-	for (i = 0; delim[i] != '\0'; i++)
-	{
-		if (c == delim[i])
-		{
+	while (*del)
+		if (*del++ == t)
 			return (1);
-		}
-	}
 	return (0);
 }
 
-
 /**
- *_isalpha - checks for alphabetic character
- *@c: The character to input
- *Return: 1 if c is alphabetic, 0 otherwise
+ *_isalpha - a function that checks for the alphapatic of character
+ *@t: The input character
+ *Return: 0 otherwise and 1 if alphabetic
  */
 
-int _isalpha(int c)
+int _isalpha(int t)
 {
-	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+	if ((t >= 'a' && t <= 'z') || (t >= 'A' && t <= 'Z'))
+		return (1);
+	else
+		return (0);
 }
-
-
 /**
- *_atoi - converts a string to an integer
- *@s: the string to be converted
- *Return: 0 if no numbers in string, converted number otherwise
+ *_atoi - a function that converts a string to an integer
+ *@t: the string that we want to convert
+ *Return: converted otherwise and return 1 if no number in string
  */
-
-int _atoi(char *s)
+int _atoi(char *t)
 {
-	int sign = 1;
-	unsigned int result = 0;
+	int a, s = 1, f = 0, op;
+	unsigned int res = 0;
 
-	while (*s)
+	for (a = 0;  t[a] != '\0' && f != 2; a++)
 	{
-		if (*s == '-')
-			sign = -sign;
-		else if (*s >= '0' && *s <= '9')
+		if (t[a] == '-')
+			s *= -1;
+
+		if (t[a] >= '0' && t[a] <= '9')
 		{
-			result = result * 10 + (*s - '0');
+			f = 1;
+			res *= 10;
+			res += (t[a] - '0');
 		}
-		else
-		{
-			break;
-		}
-		s++;
+		else if (f == 1)
+			f = 2;
 	}
 
-	return (sign * result);
+	if (s == -1)
+		op = -res;
+	else
+		op = res;
+
+	return (op);
 }
-
-
-

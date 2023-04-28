@@ -1,143 +1,104 @@
 #include "shell.h"
-
 /**
- * _myhistory - displays the history list, one command by line, preceded
- *              with line numbers, starting at 0.
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- *  Return: Always 0
+ * _myhistory - a function that displays the list of history
+ * @finf: potential arguments contained in a structure
+ *  Return: 0
  */
-int _myhistory(info_t *info)
+int _myhistory(info_t *finf)
 {
-	list_t *history_node = info->history;
-
-	while (history_node)
-	{
-		printf("%s\n", history_node->str);
-		history_node = history_node->next;
-	}
+	print_list(finf->history);
 	return (0);
 }
-
-
 /**
- * unset_alias - sets alias to string
- * @info: parameter struct
- * @str: the string alias
- *
- * Return: Always 0 on success, 1 on error
+ * unset_alias - slias is set to string
+ * @finf: structure parameter
+ * @s: alias string
+ * Return: 1 on error and 0 on success
  */
-int unset_alias(info_t *info, char *str)
+int unset_alias(info_t *finf, char *s)
 {
-	char *a, b;
-	int ret;
+	char *b, k;
+	int r;
 
-	a = _strchr(str, '=');
-	if (!a)
+	b = _strchr(s, '=');
+	if (!b)
 		return (1);
-	b = *a;
-	*a = 0;
-	ret = delete_node_at_index(&(info->alias),
-		get_node_index(info->alias, node_starts_with(info->alias, str, -1)));
-	*a = b;
-	return (ret);
+	k = *b;
+	*b = 0;
+	r = delete_node_at_index(&(finf->alias),
+		get_node_index(finf->alias, node_starts_with(finf->alias, s, -1)));
+	*b = k;
+	return (r);
 }
-
 /**
- * set_alias - sets alias to string
- * @info: parameter struct
- * @str: the string alias
- *
- * Return: Always 0 on success, 1 on error
+ * set_alias - a function that the string get set by alias
+ * @finf: the structure parameter
+ * @s: alias string
+ * Return: 1 on error and 0 on success
  */
-int set_alias(info_t *info, char *str)
+int set_alias(info_t *finf, char *s)
 {
-	char *p;
-	int ret;
+	char *b;
 
-	p = _strchr(str, '=');
-	if (!p)
+	b = _strchr(s, '=');
+	if (!b)
 		return (1);
+	if (!*++b)
+		return (unset_alias(finf, s));
 
-	if (!*++p)
-		return (unset_alias(info, str));
-
-	unset_alias(info, str);
-	ret = add_node_end(&(info->alias), str, 0) == NULL;
-	return (ret);
+	unset_alias(finf, s);
+	return (add_node_end(&(finf->alias), s, 0) == NULL);
 }
-
 /**
- * print_alias - prints an alias string
- * @node: the alias node
- *
- * Return: Always 0 on success, 1 on error
+ * print_alias - a function that an alias string get printed
+ * @n: node of the alias
+ * Return: its always 1 on error and 0 on success
  */
-int print_alias(list_t *node)
+int print_alias(list_t *n)
 {
+	char *b = NULL, *x = NULL;
 
-	char *p = NULL, *a = NULL;
-
-
-	if (node)
+	if (n)
 	{
-
-		p = _strchr(node->str, '=');
-
-		for (a = node->str; a <= p; a++)
-			_putchar(*a);
-
-
+		b = _strchr(n->str, '=');
+		for (x = n->str; x <= b; x++)
+			_putchar(*x);
 		_putchar('\'');
-		_puts(p + 1);
-
+		_puts(b + 1);
 		_puts("'\n");
-
 		return (0);
 	}
-
 	return (1);
 }
-
 /**
- * _myalias - mimics the alias builtin (man alias)
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- *  Return: Always 0
+ * _myalias - a function that the alias builtinn get mimics
+ * @finf: potential arguments contained in a structure
+ *  Return: 0 in all time
  */
-int _myalias(info_t *info)
+int _myalias(info_t *finf)
 {
-	char *p;
-	list_t *node;
-	int i;
+	int a = 0;
+	char *b = NULL;
+	list_t *n = NULL;
 
-	if (info->argc == 1)
+	if (finf->argc == 1)
 	{
-		node = info->alias;
-		while (node)
+		n = finf->alias;
+		while (n)
 		{
-			print_alias(node);
-			node = node->next;
+			print_alias(n);
+			n = n->next;
 		}
 		return (0);
 	}
-
-
-	for (i = 1; info->argv[i]; i++)
+	for (a = 1; finf->argv[a]; a++)
 	{
-		p = strchr(info->argv[i], '=');
-
-		if (p != NULL)
-			set_alias(info, info->argv[i]);
+		b = _strchr(finf->argv[a], '=');
+		if (b)
+			set_alias(finf, finf->argv[a]);
 		else
-		{
-			node = node_starts_with(info->alias, info->argv[i], '=');
-			if (node != NULL)
-				print_alias(node);
-		}
+			print_alias(node_starts_with(finf->alias, finf->argv[a], '='));
 	}
 
 	return (0);
 }
-
-
