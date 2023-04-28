@@ -1,76 +1,71 @@
 #include "shell.h"
 /**
- * _strncat - a function that concatenates two strings
- * @dest : the string that will be concatenated
- * @src : the string which will concatenate the first string
- * @n : the number of bytes that can be used
- * Return: the concatenated string
- */
-char *_strncat(char *dest, char *src, int n)
-{
-	char *str = dest;
-	int a, b;
-
-	a = 0;
-	b = 0;
-	while (dest[a] != '\0')
-	{
-		a++;
-	}
-	while (src[b] && b < n)
-	{
-		dest[a] = src[b];
-		a++;
-		b++;
-	}
-	if (b < n)
-	{
-		dest[a] = '\0';
-	}
-	return (str);
-}
-/**
  * _strncpy - a function that copy a string from a source to destination
- * @dest : the string that will be copied to
- * @src : the place that we will copy from
- * @n: the number of characters that we will copy
+ * @d : the string that will be copied to
+ * @sr : the place that we will copy from
+ * @x: the number of characters that we will copy
  * Return: the string that is copied
  */
-char *_strncpy(char *dest, char *src, int n)
+char *_strncpy(char *d, char *sr, int x)
 {
 	int a, b;
-	char *str = dest;
+	char *c = d;
 
 	a = 0;
-	b = 0;
-	while (src[a] != '\0' && a < n - 1)
+	while (sr[a] != '\0' && a < x - 1)
 	{
-		dest[a] = src[a];
+		d[a] = sr[a];
 		a++;
 	}
-	if (a < n)
+	if (a < x)
 	{
-		a = b;
-		while (b < n)
+		b = a;
+		while (b < x)
 		{
-			dest[b] = '\0';
+			d[b] = '\0';
 			b++;
 		}
 	}
-	return (str);
+	return (c);
+}
+/**
+ * _strncat - a function that concatenates two strings
+ * @d : the string that will be concatenated
+ * @sr : the string which will concatenate the first string
+ * @x : the number of bytes that can be used
+ * Return: the concatenated string
+ */
+char *_strncat(char *d, char *sr, int x)
+{
+	int a, b;
+	char *c = d;
+
+	a = 0;
+	b = 0;
+	while (d[a] != '\0')
+		a++;
+	while (sr[b] != '\0' && b < x)
+	{
+		d[a] = sr[b];
+		a++;
+		b++;
+	}
+	if (b < x)
+		d[a] = '\0';
+	return (c);
 }
 /**
  **_strchr - a function that locates a character in a string
- *@s: the string to be measured
- *@c: the character we are looking for
+ *@str: the string to be measured
+ *@g: the character we are looking for
  *Return: a pointer to the memory
  */
-char *_strchr(char *s, char c)
+char *_strchr(char *str, char g)
 {
 	do {
-		if (*s == c)
-			return (s);
-	} while (*s++ != '\0');
+		if (*str == g)
+			return (str);
+	} while (*str++ != '\0');
 
 	return (NULL);
 }

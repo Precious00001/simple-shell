@@ -15,20 +15,20 @@ int is_chain(info_t *finf, char *abuff, size_t *b)
 	{
 		abuff[g] = 0;
 		g++;
-		finf->cmd_buf_type = OR_CMD;
+		finf->cmd_buf_type = CMD_OR;
 	}
 	else if (abuff[g] == '&' && abuff[g + 1] == '&')
 	{
 		abuff[g] = 0;
 		g++;
-		finf->cmd_buf_type = AND_CMD;
+		finf->cmd_buf_type = CMD_AND;
 	}
 	else if (abuff[g] == ';')
 	{
 		abuff[g] = 0;
-		finf->cmd_buf_type = CHAI_CMD;
+		finf->cmd_buf_type = CMD_CHAIN;
 		abuff[g] = 0;
-		finf->cmd_buf_type = CHAI_CMD;
+		finf->cmd_buf_type = CMD_CHAIN;
 	}
 	else
 		return (0);
@@ -50,7 +50,7 @@ void check_chain(info_t *finf, char *abuff, size_t *ad, size_t a, size_t l)
 {
 	size_t g = *ad;
 
-	if (finf->cmd_buf_type == AND_CMD)
+	if (finf->cmd_buf_type == CMD_AND)
 	{
 		if (finf->status)
 		{
@@ -58,7 +58,7 @@ void check_chain(info_t *finf, char *abuff, size_t *ad, size_t a, size_t l)
 			g = l;
 		}
 	}
-	if (finf->cmd_buf_type == OR_CMD)
+	if (finf->cmd_buf_type == CMD_OR)
 	{
 		if (!finf->status)
 		{

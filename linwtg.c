@@ -1,12 +1,12 @@
 #include "shell.h"
 /**
  * input_buf - a function that contains command the chained like a buffer
- * @info: a structure parameter
+ * @finf: a structure parameter
  * @abuff: the buffer address
  * @tall: the length variable address
  * Return: the number of bytes that have been red
  */
-ssize_t input_buf(info_t *info, char **abuff, size_t *tall)
+ssize_t input_buf(info_t *finf, char **abuff, size_t *tall)
 {
 	size_t thp_tall = 0;
 	ssize_t res = 0;
@@ -19,7 +19,7 @@ ssize_t input_buf(info_t *info, char **abuff, size_t *tall)
 #if USE_GETLINE
 		res = getline(abuff, &thp_tall, stdin);
 #else
-		res = _getline(info, abuff, &thp_tall);
+		res = _getline(finf, abuff, &thp_tall);
 #endif
 		if (res > 0)
 		{
@@ -28,12 +28,12 @@ ssize_t input_buf(info_t *info, char **abuff, size_t *tall)
 				(*abuff)[res - 1] = '\0';
 				res--;
 			}
-			info->linecount_flag = 1;
+			finf->linecount_flag = 1;
 			remove_comments(*abuff);
-			build_history_list(info, *abuff, info->histcount++);
+			build_history_list(finf, *abuff, finf->histcount++);
 			{
 				*tall = res;
-				info->cmd_buf = abuff;
+				finf->cmd_buf = abuff;
 			}
 		}
 	}
@@ -41,18 +41,18 @@ ssize_t input_buf(info_t *info, char **abuff, size_t *tall)
 }
 /**
  * get_input - a function that get a line and substract it from the new line
- * @info: a structure parameter
+ * @finf: a structure parameter
  * Return: the amount of bytes that is red
  */
-ssize_t get_input(info_t *info)
+ssize_t get_input(info_t *finf)
 {
-	char **abuff_b = &(info->arg), *t;
+	char **abuff_b = &(finf->arg), *t;
 	static char *abuff;
 	ssize_t res = 0;
 	static size_t a, b, tall;
 
 	_putchar(BUF_FLUSH);
-	res = input_buf(info, &abuff, &tall);
+	res = input_buf(finf, &abuff, &tall);
 	if (res == -1)
 	{
 		return (-1);
@@ -62,10 +62,10 @@ ssize_t get_input(info_t *info)
 		b = a;
 		t = abuff + a;
 
-		check_chain(info, abuff, &b, a, tall);
+		check_chain(finf, abuff, &b, a, tall);
 		while (b < tall)
 		{
-			if (is_chain(info, abuff, &b))
+			if (is_chain(finf, abuff, &b))
 			{
 				break;
 			}
@@ -76,7 +76,7 @@ ssize_t get_input(info_t *info)
 		if (a >= tall)
 		{
 			a = tall = 0;
-			info->cmd_buf_type = NOR_CMD;
+			finf->cmd_buf_type = CMD_NORM;
 		}
 		*abuff_b = t;
 		return (_strlen(t));
@@ -86,23 +86,23 @@ ssize_t get_input(info_t *info)
 }
 /**
  * read_buf - a function that reads a buffer
- * @info: a structure parameter
- * @buf: the buffer to be checked
- * @i: the size
+ * @finf: a structure parameter
+ * @abuff: the buffer to be checked
+ * @a: the size
  * Return: the result
  */
-ssize_t read_buf(info_t *info, char *buf, size_t *i)
+ssize_t read_buf(info_t *finf, char *abuff, size_t *a)
 {
 	ssize_t res = 0;
 
-	if (*i)
+	if (*a)
 	{
 		return (0);
 	}
-	res = read(info->readfd, buf, BUF_READ_SIZE);
+	res = read(finf->readfd, abuff, READ_BUF_SIZE);
 	if (res >= 0)
 	{
-		*i = res;
+		*a = res;
 	}
 	return (res);
 }
@@ -118,21 +118,21 @@ void sigintHandler(__attribute__((unused))int tint_n)
 	_putchar(BUF_FLUSH);
 }
 /**
- * _getline - gets the next line of input from STDIN
- * @info: parameter struct
- * @point: address of pointer to buffer, preallocated or NULL
+ * _getline - a function that gets the next line of input from STDIN
+ * @finf: parameter struct
+ * @ad: address of pointer to buffer, preallocated or NULL
  * @len: size of preallocated ptr buffer if not NULL
  * Return: s
  */
-int _getline(info_t *info, char **point, size_t *len)
+int _getline(info_t *finf, char **ad, size_t *len)
 {
 	static size_t a, tall;
-	static char abuff[BUF_READ_SIZE];
+	static char abuff[READ_BUF_SIZE];
 	size_t b;
 	ssize_t res = 0, str = 0;
 	char *t = NULL, *n_t = NULL, *k;
 
-	t = *point;
+	t = *ad;
 	if (t && len)
 	{
 		str = *len;
@@ -141,7 +141,7 @@ int _getline(info_t *info, char **point, size_t *len)
 	{
 		a = tall = 0;
 	}
-	res = read_buf(info, abuff, &tall);
+	res = read_buf(finf, abuff, &tall);
 	if (res == -1 || (res == 0 && tall == 0))
 	{
 		return (-1);
@@ -164,6 +164,6 @@ int _getline(info_t *info, char **point, size_t *len)
 	t = n_t;
 	if (len)
 		*len = str;
-	*point = t;
+	*ad = t;
 	return (str);
 }

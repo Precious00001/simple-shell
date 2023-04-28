@@ -78,16 +78,16 @@ void _puts(char *s)
 int _putchar(char cha)
 {
 	static int v;
-	static char buf[BUF_WRITE_SIZE];
+	static char abuff[WRITE_BUF_SIZE];
 
-	if (cha == BUF_FLUSH || v >= BUF_WRITE_SIZE)
+	if (cha == BUF_FLUSH || v >= WRITE_BUF_SIZE)
 	{
-		write(1, buf, v);
+		write(1, abuff, v);
 		v = 0;
 	}
 	if (cha != BUF_FLUSH)
 	{
-		buf[v++] = cha;
+		abuff[v++] = cha;
 	}
 	return (1);
 }

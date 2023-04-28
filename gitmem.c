@@ -1,15 +1,15 @@
 #include "shell.h"
 /**
  * bfree - a function that null the address and free the pointer
- * @p: a pointer to free is the address
+ * @ad: a pointer to free is the address
  * Return: 0 in the otherwise case and 1 if free
  */
-int bfree(void **p)
+int bfree(void **ad)
 {
-	if (p && *p)
+	if (ad && *ad)
 	{
-		free(*p);
-		*p = NULL;
+		free(*ad);
+		*ad = NULL;
 		return (1);
 	}
 	return (0);

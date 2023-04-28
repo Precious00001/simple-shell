@@ -84,7 +84,7 @@ void print_error(info_t *info, char *estr)
 {
 	_eputs(info->fname);
 	_eputs(": ");
-	print_d(info->linecount, STDERR_FILENO);
+	print_d(info->line_count, STDERR_FILENO);
 	_eputs(": ");
 	_eputs(info->argv[0]);
 	_eputs(": ");
@@ -126,18 +126,18 @@ char *convert_number(long int num, int base, int flags)
 /**
  * remove_comments - a function that replaces
  * the first instance of '#' with '\0'
- * @buf : the address of the modified string
+ * @abuff : the address of the modified string
  * Return: 0 always
  */
-void remove_comments(char *buf)
+void remove_comments(char *abuff)
 {
 	int a;
 
-	for (a = 0; buf[a] != '\0'; a++)
+	for (a = 0; abuff[a] != '\0'; a++)
 	{
-		if (buf[a] == '#' && (!a || buf[a - 1] == ' '))
+		if (abuff[a] == '#' && (!a || abuff[a - 1] == ' '))
 		{
-			buf[a] = '\0';
+			abuff[a] = '\0';
 			break;
 		}
 }

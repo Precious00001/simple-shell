@@ -49,7 +49,7 @@ int hsh(info_t *finf, char **av)
 int find_builtin(info_t *finf)
 {
 	int a, bltin_r = -1;
-	builtin_tblll bltintbl[] = {
+	builtin_table bltintbl[] = {
 		{"exit", _myexit},
 		{"env", _myenv},
 		{"help", _myhelp},
@@ -64,7 +64,7 @@ int find_builtin(info_t *finf)
 	for (a = 0; bltintbl[a].type; a++)
 		if (_strcmp(finf->argv[0], bltintbl[a].type) == 0)
 		{
-			finf->linecount++;
+			finf->line_count++;
 			bltin_r = bltintbl[a].func(finf);
 			break;
 		}
@@ -84,7 +84,7 @@ void find_cmd(info_t *finf)
 	finf->path = finf->argv[0];
 	if (finf->linecount_flag == 1)
 	{
-		finf->linecount++;
+		finf->line_count++;
 		finf->linecount_flag = 0;
 	}
 	for (a = 0, c = 0; finf->arg[a]; a++)

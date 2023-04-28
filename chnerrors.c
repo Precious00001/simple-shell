@@ -18,16 +18,15 @@ void _eputs(char *str)
 /**
  * _eputchar - writes the character c to stderr
  * @c: The character to print
- *
  * Return: On success 1.
  * On error, -1 is returned, and errno is set appropriately.
  */
 int _eputchar(char c)
 {
-	static char buf[BUF_WRITE_SIZE];
+	static char buf[WRITE_BUF_SIZE];
 	static int buf_len;
 
-	if (buf_len >= BUF_WRITE_SIZE || c == BUF_FLUSH)
+	if (buf_len >= WRITE_BUF_SIZE || c == BUF_FLUSH)
 	{
 		write(STDERR_FILENO, buf, buf_len);
 		buf_len = 0;
@@ -51,9 +50,9 @@ int _eputchar(char c)
 int _putfd(char c, int fd)
 {
 	static int i;
-	static char buf[BUF_WRITE_SIZE];
+	static char buf[WRITE_BUF_SIZE];
 
-	if (c == BUF_FLUSH || i >= BUF_WRITE_SIZE)
+	if (c == BUF_FLUSH || i > WRITE_BUF_SIZE)
 	{
 		write(fd, buf, i);
 		i = 0;
@@ -62,7 +61,6 @@ int _putfd(char c, int fd)
 		buf[i++] = c;
 	return (1);
 }
-
 /**
  *_putsfd - prints an input string
  * @str: the string to be printed
@@ -80,5 +78,3 @@ int _putsfd(char *str, int fd)
 		_putfd(str[i], fd);
 	return (i);
 }
-
-

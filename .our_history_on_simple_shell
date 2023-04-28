@@ -1,6 +1,3 @@
-/**
- * - a simple file about our history in simple shell
- */
 ls
 betty utility.c
 gcc utility.c
