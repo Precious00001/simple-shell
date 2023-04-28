@@ -25,8 +25,13 @@ int is_chain(info_t *finf, char *abuff, size_t *b)
 	}
 	else if (abuff[g] == ';')
 	{
+<<<<<<< HEAD
 		abuff[g] = 0;
 		finf->cmd_buf_type = CHAI_CMD;
+=======
+		buf[j] = 0; /* replace semicolon with null */
+		info->cmd_buf_type = CHAIN_CMD;
+>>>>>>> refs/remotes/origin/master
 	}
 	else
 		return (0);

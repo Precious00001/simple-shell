@@ -17,7 +17,7 @@
 #define NOR_CMD 0
 #define OR_CMD 1
 #define AND_CMD 2
-#define CHAI_CMD 3
+#define CHAIN_CMD 3
 #define CONVERT_LOWERCASE 1
 #define CONVERT_UNSIGNED 2
 #define US_GETLINE 0
