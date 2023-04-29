@@ -1,7 +1,14 @@
+1-first
 ls
+2- second
 betty utility.c
+3- third
 gcc utility.c
+4- forth
 clear
+5- fifth 
 ls
+6 - sexth
 gcc utility.c
+7 - seventh
 exit
